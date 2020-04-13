@@ -1,8 +1,13 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const app = express()
-const port = 3000
-const db = require('./queries')
+const dotenv = require('dotenv');
+dotenv.config();
+
+const express = require('express');
+const app = express();
+
+const bodyParser = require('body-parser');
+const db = require('./queries');
+
+const PORT = process.env.PORT;
 
 app.use(bodyParser.json())
 app.use(
@@ -19,7 +24,6 @@ app.get('/:redirect', db.getRedirect)
 
 app.get('/urls', db.getUrls)
 
-
-app.listen(port, () => {
-  console.log(`Server listening on ${port}`)
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`)
 })
