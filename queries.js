@@ -27,14 +27,15 @@ const getUrls = (req, res) => {
 // TODO - Standardize redirect url format
 const getRedirect = (req, res) => {
   const redirectString = req.params.redirect;
+  const decodedString = base62.decode(redirectString);
   
-  pool.query('SELECT * FROM urls WHERE redirect_string = $1', [redirectString], (err, result) => {
+  pool.query('SELECT * FROM urls WHERE url_id = $1', [decodedString], (err, result) => {
     if (err) {
       throw err;
     }
-    const queryResults = result.rows;
+    const redirectLink = result.rows[0].redirect_link;
 
-    res.redirect(302, `${queryResults[0].redirect_link}`);
+    res.redirect(302, `${redirectLink}`);
   })
 }
 
