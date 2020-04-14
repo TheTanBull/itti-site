@@ -9,6 +9,8 @@ const db = require('./queries');
 
 const PORT = process.env.PORT;
 
+app.set('view engine', 'ejs');
+
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -19,16 +21,15 @@ app.use('/static/', express.static('public'));
 
 // TODO - Create Homepage
 app.get('/', (req, res) => {
-  res.json({ info: 'Test' })
-})
+  res.render('home');
+});
 
+app.get('/:redirect', db.getRedirect);
 
-app.post('/urls', db.minifyUrl)
+// **** API ****
+app.post('/api/urls', db.minifyUrl);
 
-app.get('/:redirect', db.getRedirect) 
-
-app.get('/urls', db.getUrls)
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`)
-})
+});
