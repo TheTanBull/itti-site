@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-app.get('/:redirect', db.getRedirect);
+app.get('/:redirect([A-z0-9]{3,})', db.getRedirect);
 
 // **** API ****
 app.post('/api/urls', db.minifyUrl);
