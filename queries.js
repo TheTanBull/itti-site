@@ -1,4 +1,7 @@
-const Pool = require('pg').Pool
+// TODO add error handling
+
+const Pool = require('pg').Pool;
+const base62 = require('base62');
 
 // TODO - Add dotenv + environment variables
 const pool = new Pool({
@@ -25,18 +28,40 @@ const getUrls = (req, res) => {
 const getRedirect = (req, res) => {
   const redirectString = req.params.redirect;
   
-  pool.query('SELECT * FROM urls WHERE redirect_string = $1', [redirectString], (err, results) => {
+  pool.query('SELECT * FROM urls WHERE redirect_string = $1', [redirectString], (err, result) => {
     if (err) {
-      throw err
+      throw err;
     }
-    const queryResults = results.rows;
+    const queryResults = result.rows;
 
-    console.log(queryResults[0])
-    res.redirect(302, `${queryResults[0].redirect_link}`)
+    res.redirect(302, `${queryResults[0].redirect_link}`);
   })
+}
+
+const minifyUrl = (req, res) => {
+  const  { link } = req.body;
+  if (link) {
+    pool.query('INSERT INTO urls (redirect_link) VALUES ($1) RETURNING url_id', [link], (err, result) => {
+      if (err) {
+        throw err;
+      }
+
+      const urlId = result.rows[0].url_id;
+      const encodedUrlId = base62.encode(urlId);
+
+      pool.query('UPDATE urls SET redirect_string = $1 WHERE url_id = $2', [encodedUrlId, urlId], (error, results) => {
+        if (err) {
+          throw err;
+        }
+        res.status(200).send(`URL created ittie.site/${encodedUrlId}`);
+      })
+      console.log(urlId, encodedUrlId);
+    })
+  }
 }
 
 module.exports = {
   getRedirect,
   getUrls,
+  minifyUrl,
 }
