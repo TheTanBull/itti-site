@@ -16,9 +16,14 @@ app.use(
   })
 )
 
+
+// TODO - Create Homepage
 app.get('/', (req, res) => {
   res.json({ info: 'Test' })
 })
+
+
+app.post('/urls', db.minifyUrl)
 
 app.get('/:redirect', db.getRedirect) 
 
