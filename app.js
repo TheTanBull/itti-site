@@ -9,13 +9,13 @@ const db = require('./queries');
 
 const PORT = process.env.PORT;
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
-)
-
+);
+app.use('/static/', express.static('public'));
 
 // TODO - Create Homepage
 app.get('/', (req, res) => {
