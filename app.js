@@ -21,7 +21,7 @@ app.use('/static/', express.static('public'));
 
 // TODO - Create Homepage
 app.get('/', (req, res) => {
-  res.render('home');
+  res.render('home', { host: process.env.HOST });
 });
 
 app.get('/:redirect([A-z0-9]{3,})', db.getRedirect);
