@@ -41,10 +41,11 @@ const getRedirect = (req, res) => {
 
 const minifyUrl = (req, res) => {
   const  { link } = req.body;
+  console.log(req.body);
   if (link) {
     pool.query('INSERT INTO urls (redirect_link) VALUES ($1) RETURNING url_id', [link], (err, result) => {
       if (err) {
-        throw err;
+        res.status(500).json({ success: false, error: err });
       }
 
       const urlId = result.rows[0].url_id;
@@ -52,12 +53,14 @@ const minifyUrl = (req, res) => {
 
       pool.query('UPDATE urls SET redirect_string = $1 WHERE url_id = $2', [encodedUrlId, urlId], (error, results) => {
         if (err) {
-          throw err;
+          res.status(500).json({ success: false, error: err });
         }
-        res.status(200).send(`URL created ittie.site/${encodedUrlId}`);
+        res.status(200).json({ success: true, url: process.env.HOST + encodedUrlId });
       })
       console.log(urlId, encodedUrlId);
     })
+  } else {
+    res.status(400).json({ success: false });
   }
 }
 
