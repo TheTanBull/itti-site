@@ -3,3 +3,7 @@ node_modules/
 
 # environment
 .env
+
+# keys
+server.cert
+server.key
