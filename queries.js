@@ -33,7 +33,13 @@ const getRedirect = (req, res) => {
     if (err) {
       throw err;
     }
-    const redirectLink = result.rows[0].redirect_link;
+    let redirectLink;
+    
+    if (result.rows[0]) {
+      redirectLink = result.rows[0].redirect_link;
+    } else {
+      redirectLink = '/';
+    }
 
     res.redirect(302, `${redirectLink}`);
   })
