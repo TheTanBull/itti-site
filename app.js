@@ -31,12 +31,12 @@ app.get('/', (req, res) => {
 app.get('/:redirect([A-z0-9]{3,})', db.getRedirect);
 
 // Non-Existent Routing
-app.use(function(req, res, next){
-  var err = new Error('Not Found');
-  err.status = 404;
-  res.redirect('/');
-  next(err);
-});
+// app.use(function(req, res, next){
+//   var err = new Error('Not Found');
+//   err.status = 404;
+//   res.redirect('/');
+//   next(err);
+// });
 
 
 // **** API ****
