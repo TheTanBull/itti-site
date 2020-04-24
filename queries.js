@@ -24,7 +24,7 @@ const getUrls = (req, res) => {
 }
 // **************************************************
 
-// TODO - Standardize redirect url format
+
 const getRedirect = (req, res) => {
   const redirectString = req.params.redirect;
   const decodedString = base62.decode(redirectString);
@@ -33,10 +33,11 @@ const getRedirect = (req, res) => {
     if (err) {
       throw err;
     }
+
     let redirectLink;
     
     if (result.rows[0]) {
-      redirectLink = result.rows[0].redirect_link;
+      redirectLink = 'https://' + result.rows[0].redirect_link;
     } else {
       redirectLink = '/';
     }
@@ -49,7 +50,9 @@ const minifyUrl = (req, res) => {
   const  { link } = req.body;
   console.log(req.body);
   if (link) {
-    pool.query('INSERT INTO urls (redirect_link) VALUES ($1) RETURNING url_id', [link], (err, result) => {
+    var splitLink = link.split('//');
+    
+    pool.query('INSERT INTO urls (redirect_link) VALUES ($1) RETURNING url_id', [splitLink.length > 1 ? splitLink[1] : splitLink[0]], (err, result) => {
       if (err) {
         res.status(500).json({ success: false, error: err });
       }
